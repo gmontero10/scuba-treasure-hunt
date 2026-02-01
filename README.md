@@ -4,7 +4,7 @@ A 3D mobile web game where players control a diver from a third-person view to c
 
 ## Play
 
-Visit: https://gm888.github.io/scuba-treasure-hunt/
+Visit: https://gmontero10.github.io/scuba-treasure-hunt/
 
 ## Features
 
