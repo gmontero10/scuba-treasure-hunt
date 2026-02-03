@@ -56,7 +56,7 @@ export function Diver() {
     metalness: 0.1,
   }), [])
 
-  useFrame((_, delta) => {
+  useFrame(({ camera }, delta) => {
     if (!groupRef.current) return
 
     animTime.current += delta
@@ -65,12 +65,21 @@ export function Diver() {
     const inputMagnitude = Math.sqrt(joystickInput.x ** 2 + joystickInput.y ** 2)
 
     if (inputMagnitude > 0.1) {
-      // Calculate target rotation from joystick
-      targetRotation.current = Math.atan2(-joystickInput.x, -joystickInput.y)
+      // Transform joystick input based on camera rotation
+      const cameraRotation = camera.rotation.y
+      const cos = Math.cos(cameraRotation)
+      const sin = Math.sin(cameraRotation)
 
-      // Add acceleration based on joystick
-      velocity.current.x += joystickInput.x * speed * delta
-      velocity.current.z -= joystickInput.y * speed * delta
+      // Rotate joystick input from view-space to world-space
+      const worldX = joystickInput.x * cos - joystickInput.y * sin
+      const worldZ = joystickInput.x * sin + joystickInput.y * cos
+
+      // Calculate target rotation from transformed input (diver faces movement direction)
+      targetRotation.current = Math.atan2(worldX, worldZ)
+
+      // Add acceleration based on transformed joystick input
+      velocity.current.x += worldX * speed * delta
+      velocity.current.z += worldZ * speed * delta
     }
 
     // Apply drag
